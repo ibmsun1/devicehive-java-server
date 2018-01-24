@@ -64,6 +64,7 @@ if (test_branches.contains(env.BRANCH_NAME)) {
                 JWT_SECRET=devicehive
                 DH_FE_SPRING_PROFILES_ACTIVE=rpc-client
                 DH_BE_SPRING_PROFILES_ACTIVE=rpc-server
+                DH_LOG_LEVEL=DEBUG
                 """
 
                 start_devicehive()
@@ -90,6 +91,7 @@ if (test_branches.contains(env.BRANCH_NAME)) {
               COMPOSE_FILE=docker-compose.yml:ci-images.yml:dh_proxy_custom_certificate.yml:dh_plugin.yml:dh_plugin-ci-image.yml:cadvisor.yml
               DH_TAG=${BRANCH_NAME}
               JWT_SECRET=devicehive
+              DH_LOG_LEVEL=DEBUG
               """
 
               start_devicehive()
@@ -193,6 +195,7 @@ def run_devicehive_tests() {
     sh '''
       cp config.json config.json.orig
       cat config.json.orig | \\
+      jq ".log.level = \\"DEBUG\\"" | \\
       jq ".server.wsUrl = \\"ws://127.0.0.1/api/websocket\\"" | \\
       jq ".server.ip = \\"127.0.0.1\\"" | \\
       jq ".server.port = \\"80\\"" | \\
